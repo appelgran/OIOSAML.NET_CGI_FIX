@@ -314,7 +314,8 @@ namespace dk.nita.saml20
         public Saml20Assertion(XmlElement assertion, IEnumerable<AsymmetricAlgorithm> trustedSigners, bool quirksMode)
         {
             _quirksMode = quirksMode;
-            profile = AssertionProfile.DKSaml;
+			//profile = AssertionProfile.DKSaml; // CGI IdP fix (removed)
+            profile = AssertionProfile.Core; // CGI IdP fix (added)
             LoadXml(assertion, trustedSigners);
         }
 

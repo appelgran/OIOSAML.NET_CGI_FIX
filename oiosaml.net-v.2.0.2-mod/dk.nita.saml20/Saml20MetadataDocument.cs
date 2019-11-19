@@ -176,7 +176,8 @@ namespace dk.nita.saml20
                 spDescriptor.AttributeConsumingService = new AttributeConsumingService[] { attConsumingService };
                 attConsumingService.index = signonServiceEndpoints[0].index;
                 attConsumingService.isDefault = true;
-                attConsumingService.ServiceName = new LocalizedName[] { new LocalizedName("SP", "da") };
+                //attConsumingService.ServiceName = new LocalizedName[] { new LocalizedName("SP", "da") }; // CGI IdP fix (removed)
+                attConsumingService.ServiceName = new LocalizedName[] { new LocalizedName("SP", "en") }; // CGI IdP fix (added)
 
                 attConsumingService.RequestedAttribute =
                     new RequestedAttribute[config.RequestedAttributes.Attributes.Count];

@@ -668,6 +668,13 @@ namespace dk.nita.saml20.protocol
             if (idpEndpoint.IsPassive)
                 request.IsPassive = true;
 
+            // CGI IdP fix
+            if(string.IsNullOrEmpty(idpEndpoint.AssertionConsumerServiceUrl))
+                request.Request.AssertionConsumerServiceURL = context.Request.Url.ToString();
+            else if (Uri.IsWellFormedUriString(idpEndpoint.AssertionConsumerServiceUrl, UriKind.Absolute))
+                request.Request.AssertionConsumerServiceURL = idpEndpoint.AssertionConsumerServiceUrl;
+            // CGI IdP fix end
+
             bool forceAuthn;
             string forceAuthnAsString = context.Request.Params[IDPForceAuthn];
             if (bool.TryParse(forceAuthnAsString, out forceAuthn))

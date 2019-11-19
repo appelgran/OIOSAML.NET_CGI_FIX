@@ -954,6 +954,15 @@ namespace dk.nita.saml20.config
         [XmlAttribute(AttributeName = "default")]
         public bool Default;
 
+        // CGI IdP fix
+        /// <summary>
+        /// Decides where user should be returned on successful authentication.
+        /// Set to current request URL if current url is where user should be returned to.
+        /// </summary>
+        [XmlAttribute(AttributeName = "assertionConsumerServiceUrl")]
+        public string AssertionConsumerServiceUrl;
+        // CGI IdP fix end
+
         /// <summary>
         /// When using RSA keys SHA256 is the default for signing SAML requests. This allows for backwards compatibility if the Identity Provider only support RSA SHA1
         /// </summary>
