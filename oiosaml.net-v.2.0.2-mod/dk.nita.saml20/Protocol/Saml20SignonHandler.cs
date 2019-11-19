@@ -471,7 +471,7 @@ namespace dk.nita.saml20.protocol
                 if (!assertion.CheckSignature(GetTrustedSigners(endp.metadata.GetKeys(KeyTypes.signing), endp, out validationFailures)))
                 {
                     AuditLogging.logEntry(Direction.IN, Operation.AUTHNREQUEST_POST,
-                    "Invalid signature, assertion: " + elem);
+                    "Invalid signature, assertion: [" + elem.OuterXml + "]");
 
                     string errorMessage = Resources.SignatureInvalid;
 
@@ -479,6 +479,10 @@ namespace dk.nita.saml20.protocol
                     if (validationFailures.Any())
                     {
                         errorMessage += $"\nVerification of IDP certificate used for signature failed from the following certificate checks:\n{string.Join("\n", validationFailures)}";
+                    }
+                    else
+                    {
+                        errorMessage += $"\nVerification of IDP certificate used for signature failed with zero failures. Key(s) for signing might be missing.";
                     }
 
                     HandleError(context, errorMessage);
