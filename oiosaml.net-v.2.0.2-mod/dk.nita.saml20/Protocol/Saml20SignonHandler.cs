@@ -140,7 +140,8 @@ namespace dk.nita.saml20.protocol
                     AuditLogging.logEntry(Direction.IN, Operation.ARTIFACTRESOLVE, "Could not verify signature", parser.SamlMessage);
                 }
                 builder.RespondToArtifactResolve(idp, parser.ArtifactResolve);
-            }else if(parser.IsArtifactResponse())
+            }
+            else if (parser.IsArtifactResponse())
             {
                 Trace.TraceData(TraceEventType.Information, Tracing.ArtifactResponseIn);
 
@@ -160,19 +161,22 @@ namespace dk.nita.saml20.protocol
                     if(isEncrypted)
                     {
                         HandleEncryptedAssertion(context, assertion);
-                    }else
+                    }
+                    else
                     {
                         HandleAssertion(context, assertion);
                     }
 
-                }else
+                }
+                else
                 {
                     AuditLogging.logEntry(Direction.IN, Operation.ARTIFACTRESOLVE, string.Format("Unsupported payload message in ArtifactResponse: {0}, msg: {1}", parser.ArtifactResponse.Any.LocalName, parser.SamlMessage));
                     HandleError(context,
                                 string.Format("Unsupported payload message in ArtifactResponse: {0}",
                                               parser.ArtifactResponse.Any.LocalName));
                 }
-            }else
+            }
+            else
             {
                 Status s = parser.GetStatus();
                 if (s != null)
@@ -345,13 +349,15 @@ namespace dk.nita.saml20.protocol
 
         private static void CheckReplayAttack(HttpContext context, string inResponseTo)
         {
-            var expectedInResponseToSessionState = SessionStore.CurrentSession[SessionConstants.ExpectedInResponseTo];
+            if (string.IsNullOrEmpty(inResponseTo))
+                throw new Saml20Exception("Empty InResponseTo from IdP is not allowed.");
 
+            var expectedInResponseToSessionState = SessionStore.CurrentSession[SessionConstants.ExpectedInResponseTo];
             SessionStore.CurrentSession[SessionConstants.ExpectedInResponseTo] = null; // Ensure that no more responses can be received.
 
-            string expectedInResponseTo = expectedInResponseToSessionState.ToString();
-            if (string.IsNullOrEmpty(expectedInResponseTo) || string.IsNullOrEmpty(inResponseTo))
-                throw new Saml20Exception("Empty protocol message id is not allowed.");
+            string expectedInResponseTo = expectedInResponseToSessionState?.ToString();
+            if (string.IsNullOrEmpty(expectedInResponseTo))
+                throw new Saml20Exception("Expected InResponseTo not found in current session.");
 
             if (inResponseTo != expectedInResponseTo)
             {
@@ -455,7 +461,8 @@ namespace dk.nita.saml20.protocol
             }
             
             Saml20Assertion assertion = new Saml20Assertion(elem, null, quirksMode);
-                        
+            assertion.Validate(DateTime.UtcNow);
+
             if (endp == null || endp.metadata == null)
             {
                 AuditLogging.logEntry(Direction.IN, Operation.AUTHNREQUEST_POST,
@@ -594,7 +601,8 @@ namespace dk.nita.saml20.protocol
                 if (context.Cache[assertion.Id] != null)
                 {
                     HandleError(context, Resources.OneTimeUseReplay);
-                }else
+                }
+                else
                 {
                     context.Cache.Insert(assertion.Id, string.Empty, null, assertion.NotOnOrAfter, Cache.NoSlidingExpiration);
                 }

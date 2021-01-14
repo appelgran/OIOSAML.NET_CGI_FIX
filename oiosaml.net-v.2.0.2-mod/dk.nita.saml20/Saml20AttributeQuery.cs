@@ -53,6 +53,11 @@ namespace dk.nita.saml20
             get { return _attrQuery.Issuer.Value; }
             set { _attrQuery.Issuer.Value = value; }
         }
+        public string Consent
+        {
+            get { return _attrQuery.Consent; }
+            set { _attrQuery.Consent = value; }
+        }
 
         /// <summary>
         /// Gets the ID of the attribute query.
@@ -222,6 +227,7 @@ namespace dk.nita.saml20
             Saml20Assertion assertion =
                     new Saml20Assertion(xmlAssertion, null,
                                         AssertionProfile.Core, endPoint.QuirksMode);
+            assertion.Validate(DateTime.UtcNow);
 
             if (Trace.ShouldTrace(TraceEventType.Information))
             {

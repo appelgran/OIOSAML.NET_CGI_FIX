@@ -130,6 +130,18 @@ namespace dk.nita.saml20.config
             }
             set { _actions = value; }
         }
+
+        private int _allowedClockSkewMinutes = 5;
+
+        /// <summary>
+        /// Clock skew in minutes to validate NotBefore, NotOnOrAfter, and validUntil 
+        /// </summary>
+        [XmlElement(ElementName = "AllowedClockSkewMinutes")]
+        public int AllowedClockSkewMinutes
+        {
+            get { return _allowedClockSkewMinutes; }
+            set => _allowedClockSkewMinutes = value;
+        }
     }
 
     /// <summary>
